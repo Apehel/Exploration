@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8"/>
+  <link rel="stylesheet" type="text/css" href="map.css" />
+  <script language="Javascript" type="text/javascript" src="robot-explorer.model.js"></script>
+  <script type="application/javascript">
+        
+      function drawGrid(context, map) {
+            x = (Math.floor(map.minX / GRID) * GRID - map.minX) * SCALE;
+            y = (map.maxY - map.minY) * SCALE;
+            while (x <= ((map.maxX - map.minX + GRID ) * SCALE)) {
+                drawLine(context, x, 0, x, y, "#00FF00");
+                x += GRID * SCALE;
+            }
+            x = (map.maxX - map.minX) * SCALE;
+            y = (map.maxY - Math.floor((map.minY + GRID) / GRID) * GRID) * SCALE;
+            while (y >= 0) {
+                drawLine(context, 0, y, x, y, "#00FF00");
+                y -= GRID * SCALE;
+            }
+      }
+      
+      function setViewerSize(map, width, height) {
+            var mapContainer = document.getElementById("map-container");
+            var mapFrame = document.getElementById("map-frame");
+            var canvas = document.getElementById("map");
+            map.minX -= GRID / 2;
+            map.maxX += GRID / 2;
+            map.minY -= GRID / 2;
+            map.maxY += GRID / 2;
+            canvas.width = (map.maxX - map.minX ) * SCALE;
+            if (canvas.width < width) {
+                  canvas.width = width;
+                  map.maxX = (width / SCALE) + map.minX;
+            }
+            canvas.height = (map.maxY - map.minY) * SCALE;
+            if (canvas.height < height) {
+                  canvas.height = height;
+                  map.maxY = (height / SCALE) + map.minY;
+            }
+            mapContainer.style.width = width.toString() + "px";
+            mapContainer.style.height = height.toString() + "px";
+            mapFrame.style.width = canvas.width.toString() + "px";
+            mapFrame.style.height = canvas.height.toString() + "px";
+     }
+	
+	function drawMap(xmlDoc) {
+        var canvas = document.getElementById("map");
+        if (canvas.getContext) {
+            var context = canvas.getContext("2d");
+            var map = new XMAP(xmlDoc.documentElement);
+            setViewerSize(map, 800, 600);
+            drawGrid(context, map);
+            map.draw(context);
+        }
+	}
+	
+	function loadMap() {
+	  var xhttp = new XMLHttpRequest();
+	  xhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+		  drawMap(this.responseXML);
+		} 
+	  };
+	  xhttp.open("GET", "map.xml", true);
+	  xhttp.send();
+	}
+      
+      function zoomIn() {
+            SCALE *= Math.pow(2, 0.25);
+            loadMap();
+      }
+	
+      function zoomOut() {
+            SCALE /= Math.pow(2, 0.25);
+            loadMap();
+      }
+	
+  </script>
+ </head>
+ <body onload="loadMap()">
+  <div id="map-container">
+    <div id="map-frame">
+   <canvas id="map" width="1024" height="800"></canvas>
+   </div>
+  </div>
+  <div id="toolbar">
+  <button id="reload" type="button" onclick="loadMap()">Recharger le plan</button>
+  <button id="zoomin" type="button" onclick="zoomIn()">+</button>
+  <button id="zoomout" type="button" onclick="zoomOut()">-</button>
+  </div>
+  <div id="container">
+    <div id="content">
+    </div>
+  </div>
+ </body>
+</html>

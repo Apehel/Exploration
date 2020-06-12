@@ -1,0 +1,48 @@
+/* 
+Feuille de style pour présenter une carte pour le robot-explorer
+
+Auteur : André-Pierre LIMOUZIN
+Version : 1.0 - 05.2020
+*/
+
+
+#reload {
+}
+
+#map {
+}
+
+#map-container {
+	margin: auto;
+	width: 800px;
+	height: 600px;
+	border:1px solid black;
+	overflow:auto;
+} 
+
+#map-frame {
+	width:1024px;
+	height:800px;
+}
+
+.map-container canvas {
+}
+
+#tool-bar {
+	margin:auto;
+	text-align:center;
+	width:200px;
+}
+
+#container {
+	width:400px;
+	height:300px;
+	border:1px solid black;
+	overflow:auto;
+}
+
+#content {
+	width:600px;
+	height:400px;
+	overflow:hidden;
+}
