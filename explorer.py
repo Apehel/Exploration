@@ -2,8 +2,10 @@
 """
 Ce module définit les classes relatives au robot Explorer.
 
+Cela inclus le problème d'intialisation des capteurs Lego avec PiStorms.
+
 Auteur : André-Pierre LIMOUZIN
-Version : 1.1 - 05.2020
+Version : 1.2 - 05.2020
 """
 
 import sys
@@ -20,6 +22,63 @@ from ev3dev2.sensor import INPUT_3
 import lego
 from robot import Robot
 
+
+#
+#
+##############################################################################
+"""
+Le PiStorms ne sait pas détecter automatiquement les capteurs.
+Ceux-ci doivent être explicitement initialisés sur les ports sur lequels
+ils sont physiquement connectés.
+Il y a  plusieurs problèmes cependant :
+L'initialisation du paramètre set_device semble ne pas être toujours nécessaire.
+La modification de ce paramètre plante le capteur qui ne répond plus.
+Par exemple le capteur Lego Ultra-Son reste éteint.
+Ou fournit un résultat érroné.
+De plus, la méthode set_device semble inutile pour les moteurs (ports OUTPUT_X).
+Cela provoque une erreur à l'exécution.
+Un temps d'attente semble nécessaire entre chaque initialisation, sans que la
+durée soit rellement évaluée. Car elle peut varier entre chaque test.
+Pas de documentation trouvée à ce sujet.
+"""
+
+from ev3dev2.port import LegoPort
+from ev3dev2.sensor.lego import TouchSensor
+from ev3dev2.sensor import INPUT_1, INPUT_2
+
+input1 = LegoPort(INPUT_1)
+input1.mode = "ev3-analog"
+#input1.set_device = "lego-ev3-touch"
+time.sleep(1)
+
+input2 = LegoPort(INPUT_2)
+input2.mode = "ev3-analog"
+time.sleep(1)
+
+input3 = LegoPort(INPUT_3)
+input3.mode ="ev3-uart"
+input3.set_device = "lego-ev3-us"
+time.sleep(1)
+
+input4 = LegoPort(INPUT_4)
+input4.mode ="ev3-uart"
+input4.set_device = "lego-ev3-ir"
+time.sleep(1)
+
+outputA = LegoPort(OUTPUT_A)
+outputA.mode = "tacho-motor"
+#outputA.set_device = "lego-ev3-m-motor"
+time.sleep(1)
+
+outputB = LegoPort(OUTPUT_B)
+outputB.mode = "tacho-motor"
+#outputA.set_device = "lego-ev3-m-motor"
+time.sleep(1)
+
+outputC = LegoPort(OUTPUT_C)
+outputC.mode = "tacho-motor"
+#outputA.set_device = "lego-ev3-m-motor"
+time.sleep(1)
 
 #
 #
